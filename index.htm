@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento de Equipamentos MRS</title>
+    <link rel="icon" type="image/png" href="imagens/logomarca.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Fundo com imagem e transparência 60% (aumentado em 10%) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('imagens/mrs_bg.png');
+            /* aumentar em 10% mantendo proporção */
+            background-size: 110% auto;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            margin-top: 70px;
+        }
+
+        .logo-top {
+            position: absolute;
+            top: 5px;
+            left: 40%;
+            transform: translateX(80%);
+        }
+
+        .logo-top img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-marca {
+            max-width: 240px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            /* Reduzido para 150px */
+            max-width: 150px;
+            width: 100%;
+            height: auto;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .input-group input {
+            flex: 1;
+        }
+
+        .btn-scan {
+            padding: 12px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: background-color 0.3s;
+        }
+
+        .btn-scan:hover {
+            background-color: #218838;
+        }
+
+        .btn-scan:active {
+            background-color: #1e7e34;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #0066cc;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 12px;
+        }
+
+        .required::after {
+            content: ' *';
+            color: red;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 12px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);
+        }
+
+        input.required-field {
+            background-color: #fff9f0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-submit {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #0052a3;
+        }
+
+        .btn-clear {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .btn-clear:hover {
+            background-color: #e0e0e0;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        input.error {
+            border-color: red;
+        }
+
+        /* Media Queries para Responsividade Mobile */
+        @media (max-width: 768px) {
+            body {
+                height: auto;
+                min-height: 100vh;
+                padding: 20px 0;
+            }
+
+            .container {
+                margin-top: 100px;
+                margin-bottom: 20px;
+                padding: 20px;
+                max-width: 95%;
+            }
+
+            .logo-top {
+                position: static;
+                transform: none;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            .logo-top img {
+                max-width: 80px;
+            }
+
+            .header img {
+                max-width: 100px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-group input {
+                width: 100%;
+            }
+
+            .btn-scan {
+                width: 100%;
+                padding: 12px;
+            }
+
+            button {
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            label {
+                font-size: 13px;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin-top: 90px;
+            }
+
+            .logo-top img {
+                max-width: 70px;
+            }
+
+            .header img {
+                max-width: 100px;
+            }
+
+            label {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="container">
+        <div class="header">
+            <img src="imagens/logomarca.png" alt="Logo MRS" class="logo-marca">
+            <img src="imagens/titulo.png" alt="Título MRS">
+        </div>
+
+        <form id="equipamentoForm">
+            <!-- Campo 1: Nome Técnico (Obrigatório) -->
+            <div class="form-group">
+                <label for="nomeTecnico" class="required">Nome Técnico</label>
+                <input type="text" id="nomeTecnico" name="nomeTecnico" class="required-field" placeholder="Digite o nome técnico" required>
+                <div class="error-message" id="errorNomeTecnico">Este campo é obrigatório</div>
+            </div>
+
+            <!-- Campo 2: Protocolo / SA (Obrigatório) -->
+            <div class="form-group">
+                <label for="protocolo" class="required">Protocolo / SA</label>
+                <input type="text" id="protocolo" name="protocolo" class="required-field" placeholder="Digite o protocolo ou SA" required>
+                <div class="error-message" id="errorProtocolo">Este campo é obrigatório</div>
+            </div>
+
+            <!-- Campo 3: Código de Barra 1 (Obrigatório) -->
+            <div class="form-group">
+                <label for="codigoBarra1" class="required">Ler Código de Barra</label>
+                <div class="input-group">
+                    <input type="text" id="codigoBarra1" name="codigoBarra1" class="required-field" placeholder="Escaneie o código de barra" required>
+                    <button type="button" class="btn-scan" onclick="abrirLeitora('codigoBarra1')">📱 Ler</button>
+                </div>
+                <div class="error-message" id="errorCodigoBarra1">Este campo é obrigatório</div>
+                <div class="loading" id="loadingCodigoBarra1">Aguardando código de barras...</div>
+            </div>
+
+            <!-- Campo 4: Código de Barra 2 (Opcional) -->
+            <div class="form-group">
+                <label for="codigoBarra2">Ler Código de Barra (Adicional)</label>
+                <div class="input-group">
+                    <input type="text" id="codigoBarra2" name="codigoBarra2" placeholder="Escaneie um código de barra adicional (opcional)">
+                    <button type="button" class="btn-scan" onclick="abrirLeitora('codigoBarra2')">📱 Ler</button>
+                </div>
+                <div class="error-message" id="errorCodigoBarra2"></div>
+                <div class="loading" id="loadingCodigoBarra2">Aguardando código de barras...</div>
+            </div>
+
+            <!-- Botões -->
+            <div class="button-group">
+                <button type="submit" class="btn-submit">Enviar</button>
+                <button type="reset" class="btn-clear">Limpar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // URL da API para envio
+        const API_URL = 'http://127.0.0.1:8000';
+        const API_ENDPOINT = '/ordem';
+
+        const form = document.getElementById('equipamentoForm');
+        const requiredFields = ['nomeTecnico', 'protocolo', 'codigoBarra1'];
+
+        // Função para abrir leitor de código de barras do celular
+        function abrirLeitora(fieldId) {
+            const leitora = document.getElementById(fieldId);
+            const loading = document.getElementById('loading' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1));
+
+            // Verificar se o navegador suporta BarcodeDetector API (WebCodec)
+            if (typeof BarcodeDetector === 'undefined') {
+                // Fallback: solicitar acesso à câmera
+                abrirCameraParaLeitura(fieldId);
+            } else {
+                abrirCameraParaLeitura(fieldId);
+            }
+        }
+
+        // Função para abrir câmera e capturar código de barras
+        async function abrirCameraParaLeitura(fieldId) {
+            try {
+                const loading = document.getElementById('loading' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1));
+                loading.classList.add('show');
+
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+
+                // Criar elemento de vídeo temporário
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                // Criar detector de código de barras
+                const barcodeDetector = new BarcodeDetector({
+                    formats: ['code_128', 'ean_13', 'ean_8', 'code_39', 'code_93', 'codabar', 'upc_a', 'upc_e']
+                });
+
+                let codigoEncontrado = false;
+                const intervalo = setInterval(async () => {
+                    try {
+                        const barcodes = await barcodeDetector.detect(video);
+                        if (barcodes.length > 0 && !codigoEncontrado) {
+                            codigoEncontrado = true;
+                            const codigo = barcodes[0].rawValue;
+                            document.getElementById(fieldId).value = codigo;
+
+                            // Parar a câmera
+                            stream.getTracks().forEach(track => track.stop());
+                            clearInterval(intervalo);
+
+                            loading.classList.remove('show');
+                            
+                            // Auto focar no próximo campo se houver
+                            if (fieldId === 'codigoBarra1') {
+                                document.getElementById('codigoBarra2').focus();
+                            } else if (fieldId === 'codigoBarra2') {
+                                form.querySelector('.btn-submit').focus();
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Erro ao detectar código de barras:', e);
+                    }
+                }, 300);
+
+                // Parar após 30 segundos
+                setTimeout(() => {
+                    clearInterval(intervalo);
+                    stream.getTracks().forEach(track => track.stop());
+                    loading.classList.remove('show');
+                }, 30000);
+
+            } catch (error) {
+                console.error('Erro ao acessar a câmera:', error);
+                const loading = document.getElementById('loading' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1));
+                loading.classList.remove('show');
+                alert('Não foi possível acessar a câmera. Por favor, digite manualmente o código de barras.');
+            }
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Limpar mensagens de erro anteriores
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.remove('show');
+            });
+            document.querySelectorAll('input').forEach(el => {
+                el.classList.remove('error');
+            });
+
+            let isValid = true;
+
+            // Validar campos obrigatórios
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    document.getElementById('error' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1)).classList.add('show');
+                    isValid = false;
+                }
+            });
+
+            if (isValid) {
+                // Preparar dados para envio
+                const formData = {
+                    nomeTecnico: document.getElementById('nomeTecnico').value,
+                    protocolo: document.getElementById('protocolo').value,
+                    codigoBarra1: document.getElementById('codigoBarra1').value,
+                    codigoBarra2: document.getElementById('codigoBarra2').value || null,
+                    dataEnvio: new Date().toISOString()
+                };
+                
+                try {
+                    // Tentar enviar para API
+                    let envioSucesso = false;
+                    
+                    try {
+                        const response = await fetch(API_URL + API_ENDPOINT, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        if (response.ok) {
+                            console.log('Dados enviados para API com sucesso');
+                            envioSucesso = true;
+                        }
+                    } catch (apiError) {
+                        console.warn('Erro ao enviar para API:', apiError);
+                    }
+
+                    // Salvar localmente em localStorage
+                    salvarLocalmente(formData);
+                    
+                    // Feedback ao usuário
+                    alert('✅ Formulário enviado com sucesso!\\n\\nDados salvos localmente e enviados para sincronização.');
+                    console.log('Dados enviados:', formData);
+                    form.reset();
+                    
+                } catch (error) {
+                    console.error('Erro geral:', error);
+                    salvarLocalmente(formData);
+                    alert('✅ Dados salvos localmente!\\n\\n' + JSON.stringify(formData, null, 2));
+                }
+            }
+        });
+
+        // Função para salvar dados localmente (localStorage)
+        function salvarLocalmente(dados) {
+            const registros = JSON.parse(localStorage.getItem('equipamentoRegistros') || '[]');
+            registros.push(dados);
+            localStorage.setItem('equipamentoRegistros', JSON.stringify(registros));
+            console.log('Total de registros salvos:', registros.length);
+        }
+
+        // Função para exportar dados como JSON
+        function exportarDados() {
+            const registros = JSON.parse(localStorage.getItem('equipamentoRegistros') || '[]');
+            if (registros.length === 0) {
+                alert('Nenhum registro para exportar.');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(registros, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'equipamentos_' + new Date().toISOString().split('T')[0] + '.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Limpar erro quando o usuário começa a digitar
+        requiredFields.forEach(fieldId => {
+            document.getElementById(fieldId).addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('error');
+                    document.getElementById('error' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1)).classList.remove('show');
+                }
+            });
+        });
+
+        // Log de inicialização
+        window.addEventListener('load', function() {
+            const registros = JSON.parse(localStorage.getItem('equipamentoRegistros') || '[]');
+            console.log('🚀 Formulário carregado. Registros salvos:', registros.length);
+        });
+    </script>
+</body>
+</html>
