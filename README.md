@@ -1,0 +1,1 @@
+# acompanhamento_equipamentos
