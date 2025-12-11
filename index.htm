@@ -333,7 +333,7 @@
                 <label for="codigoBarra1" class="required">Ler Código de Barra</label>
                 <div class="input-group">
                     <input type="text" id="codigoBarra1" name="codigoBarra1" class="required-field" placeholder="Escaneie o código de barra" required>
-                    <button type="button" class="btn-scan" onclick="abrirLeitora('codigoBarra1')">📱 Ler</button>
+                    <button type="button" class="btn-scan" onclick="abrirLeitora('codigoBarra1')">Ler</button>
                 </div>
                 <div class="error-message" id="errorCodigoBarra1">Este campo é obrigatório</div>
                 <div class="loading" id="loadingCodigoBarra1">Aguardando código de barras...</div>
@@ -344,7 +344,7 @@
                 <label for="codigoBarra2">Ler Código de Barra (Adicional)</label>
                 <div class="input-group">
                     <input type="text" id="codigoBarra2" name="codigoBarra2" placeholder="Escaneie um código de barra adicional (opcional)">
-                    <button type="button" class="btn-scan" onclick="abrirLeitora('codigoBarra2')">📱 Ler</button>
+                    <button type="button" class="btn-scan" onclick="abrirLeitora('codigoBarra2')">Ler</button>
                 </div>
                 <div class="error-message" id="errorCodigoBarra2"></div>
                 <div class="loading" id="loadingCodigoBarra2">Aguardando código de barras...</div>
@@ -360,7 +360,7 @@
 
     <script>
         // URL da API para envio
-        const API_URL = 'https://ordemservico-65p7.onrender.com';
+        const API_URL = 'https://ordemservico-65p7.onrender.com/ordens';
         const API_ENDPOINT = '/ordem';
 
         const form = document.getElementById('equipamentoForm');
@@ -557,6 +557,7 @@
 </body>
 
 </html>
+
 
 
 
