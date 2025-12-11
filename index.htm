@@ -3,75 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Equipamentos</title>
-    <link rel="icon" type="png" href="logomarca.png">
+    <link rel="icon" type="image/png" href="logomarca.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        :root{
+            --primary: #005bbb;
+            --primary-dark: #003f8a;
+            --muted: #777;
+            --bg-alpha: 0.85;
+            --container-max: 420px;
+        }
+
+        html,body{
+            height:100%;
+            margin:0;
+        }
+
         body {
             background: url("fundo.png") no-repeat center center fixed;
             background-size: cover;
             font-family: Arial, sans-serif;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
         }
 
         .container {
-            width: 360px;
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.6); /* 60% transparência */
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            width:100%;
+            max-width:var(--container-max);
+            background: rgba(255, 255, 255, var(--bg-alpha));
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
             text-align: center;
+            box-sizing: border-box;
+        }
+
+        .header-row {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-bottom:8px;
         }
 
         .logo {
-            width: 120px;
+            width: 80px;
+            height:auto;
+            max-width: 22%;
+            min-width: 64px;
         }
 
         .titulo {
-            width: 260px;
-            margin-top: 10px;
+            width: calc(100% - 100px);
+            max-width: 260px;
+            height:auto;
+            object-fit:contain;
         }
 
-        input {
-            width: 95%;
-            padding: 10px;
-            margin: 8px 0;
+        form {
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            align-items:stretch;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width:100%;
+            padding: 10px 12px;
             border-radius: 8px;
-            border: 1px solid #777;
+            border: 1px solid var(--muted);
             font-size: 16px;
+            box-sizing:border-box;
         }
 
-        button {
-            width: 100%;
+        .buttons-row {
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-top:6px;
+        }
+
+        .btn {
+            flex:1 1 auto;
             padding: 12px;
-            margin-top: 10px;
-            font-size: 18px;
-            background: #005bbb;
+            font-size: 16px;
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            min-width: 120px;
         }
 
-        button:hover {
-            background: #003f8a;
-        }
-
-        #limparBtn {
+        .btn.secondary {
             background: #888;
         }
 
-        #limparBtn:hover {
-            background: #666;
+        .btn.ghost {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn:hover { background: var(--primary-dark); }
+        .btn.secondary:hover { background: #666; }
+
+        #pergunta2 {
+            width:100%;
+            background: transparent;
+            color: var(--primary);
+            border: 2px dashed var(--primary);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #reader {
+            width:100%;
+            max-width:320px;
+            height:auto;
+            margin: 12px auto 0;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         #mensagemStatus {
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 18px;
+            margin-top: 12px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        @media (max-width:420px){
+            .container {
+                padding: 14px;
+                border-radius:12px;
+            }
+            .logo { width:72px; }
+            .titulo { max-width: 200px; }
+            input { font-size:15px; padding:9px; }
+            .btn { font-size:15px; padding:10px; min-width:0; }
+            #reader { max-width:100%; }
         }
     </style>
 
@@ -80,13 +158,14 @@
 </head>
 
 <body>
-
     <div class="container">
 
-        <img src="logomarca.png" class="logo">
-        <img src="titulo.png" class="titulo">
+        <div class="header-row">
+            <img src="logomarca.png" class="logo" alt="Logomarca">
+            <img src="titulo.png" class="titulo" alt="Título">
+        </div>
 
-        <form id="equipamentoForm">
+        <form id="equipamentoForm" autocomplete="off">
 
             <input type="text" id="nomeTecnico" placeholder="Nome do Técnico" required>
 
@@ -94,78 +173,143 @@
 
             <!-- Leitor 1 -->
             <input type="text" id="codigoBarra1" placeholder="Clique para ler o primeiro código" readonly required>
-            <button type="button" onclick="lerCodigo1()">📷 Ler Código 1</button>
+            <div class="buttons-row">
+                <button type="button" class="btn" id="ler1Btn">📷 Ler Código 1</button>
+                <button type="button" class="btn secondary hidden" id="ler2Btn">📷 Ler Código 2</button>
+            </div>
 
             <!-- Pergunta para o segundo código -->
-            <button type="button" id="pergunta2" class="hidden" onclick="mostrarLeitor2()">
+            <button type="button" id="pergunta2" class="hidden">
                 ➕ Ler Segundo Código?
             </button>
 
             <!-- Leitor 2 aparece somente se o usuário quiser -->
-            <div id="areaCodigo2" class="hidden">
+            <div id="areaCodigo2" class="hidden" style="margin-top:8px;">
                 <input type="text" id="codigoBarra2" placeholder="Clique para ler o segundo código" readonly>
-                <button type="button" onclick="lerCodigo2()">📷 Ler Código 2</button>
             </div>
 
-            <button type="submit">📨 Enviar</button>
-            <button type="button" id="limparBtn" onclick="limparCampos()">🧹 Limpar</button>
+            <div class="buttons-row" style="margin-top:8px;">
+                <button type="submit" class="btn">📨 Enviar</button>
+                <button type="button" id="limparBtn" class="btn secondary">🧹 Limpar</button>
+            </div>
 
-            <div id="mensagemStatus"></div>
+            <div id="mensagemStatus" aria-live="polite"></div>
         </form>
 
         <!-- Janela do scanner -->
-        <div id="reader" style="width: 320px; margin-top: 15px;"></div>
+        <div id="reader" class="hidden"></div>
     </div>
-
 <script>
 /* -------------------------- CONFIGURAÇÃO DA API --------------------------- */
 const API_URL = "https://ordemservico-65p7.onrender.com/ordens";
 
+/* Elementos */
+const nomeTecnico = document.getElementById("nomeTecnico");
+const protocolo = document.getElementById("protocolo");
+const codigoBarra1 = document.getElementById("codigoBarra1");
+const codigoBarra2 = document.getElementById("codigoBarra2");
+const areaCodigo2 = document.getElementById("areaCodigo2");
+const pergunta2 = document.getElementById("pergunta2");
+const ler1Btn = document.getElementById("ler1Btn");
+const ler2Btn = document.getElementById("ler2Btn");
+const readerEl = document.getElementById("reader");
+const mensagemStatus = document.getElementById("mensagemStatus");
+const limparBtn = document.getElementById("limparBtn");
+
+let currentQrScanner = null;
+
 /* --------- Mostrar leitor 2 somente depois que escanear o primeiro -------- */
 function mostrarLeitor2() {
-    document.getElementById("areaCodigo2").classList.remove("hidden");
-    document.getElementById("pergunta2").classList.add("hidden");
-}
-
-/* --------------------- Leitura do código 1 ---------------------- */
-function lerCodigo1() {
-    iniciarLeitor("codigoBarra1", () => {
-        document.getElementById("pergunta2").classList.remove("hidden");
-    });
-}
-
-/* --------------------- Leitura do código 2 ---------------------- */
-function lerCodigo2() {
-    iniciarLeitor("codigoBarra2");
+    areaCodigo2.classList.remove("hidden");
+    pergunta2.classList.add("hidden");
+    ler2Btn.classList.remove("hidden");
 }
 
 /* --------------------- Função genérica do leitor ---------------------- */
-function iniciarLeitor(idCampo, callback = null) {
-    const html5QrCode = new Html5Qrcode("reader");
+async function iniciarLeitor(idCampo, onSuccess = null) {
+    // se já há um scanner rodando, pare primeiro
+    if (currentQrScanner) {
+        try { await currentQrScanner.stop(); } catch(e){ /* ignore */ }
+        currentQrScanner = null;
+    }
 
-    html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
-            document.getElementById(idCampo).value = decodedText;
-            html5QrCode.stop();
-            if (callback) callback();
+    // mostra a área do reader
+    readerEl.classList.remove("hidden");
+    // calcula qrbox proporcional ao tamanho do reader
+    const maxWidth = Math.min(320, readerEl.clientWidth || 320);
+    const qrbox = Math.floor(maxWidth * 0.9);
+
+    const html5QrCode = new Html5Qrcode("reader");
+    currentQrScanner = html5QrCode;
+
+    const config = { fps: 10, qrbox };
+
+    try {
+        await html5QrCode.start(
+            { facingMode: { exact: "environment" } }, // preferir câmera traseira
+            config,
+            (decodedText) => {
+                // preenche o campo e para o scanner
+                const campo = document.getElementById(idCampo);
+                if (campo) campo.value = decodedText;
+                html5QrCode.stop().then(() => {
+                    currentQrScanner = null;
+                    // esconder reader após uso
+                    readerEl.classList.add("hidden");
+                    if (typeof onSuccess === "function") onSuccess(decodedText);
+                }).catch(() => {
+                    currentQrScanner = null;
+                    readerEl.classList.add("hidden");
+                    if (typeof onSuccess === "function") onSuccess(decodedText);
+                });
+            }
+        );
+    } catch (err) {
+        currentQrScanner = null;
+        readerEl.classList.add("hidden");
+        // fallback: tente sem exact se dispositivo não suportar
+        try {
+            await html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
+                const campo = document.getElementById(idCampo);
+                if (campo) campo.value = decodedText;
+                html5QrCode.stop();
+                readerEl.classList.add("hidden");
+                if (typeof onSuccess === "function") onSuccess(decodedText);
+            });
+        } catch (err2) {
+            alert("Erro ao acessar a câmera: " + (err2?.message || err.message || err2));
         }
-    ).catch(err => {
-        alert("Erro ao acessar a câmera: " + err);
-    });
+    }
 }
+
+/* --------------------- Leitura do código 1/2 ---------------------- */
+ler1Btn.addEventListener("click", () => {
+    iniciarLeitor("codigoBarra1", () => {
+        pergunta2.classList.remove("hidden");
+    });
+});
+
+ler2Btn.addEventListener("click", () => {
+    iniciarLeitor("codigoBarra2");
+});
+
+pergunta2.addEventListener("click", () => {
+    mostrarLeitor2();
+});
 
 /* ------------------- Evento de envio do formulário ------------------- */
 document.getElementById("equipamentoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const dados = {
-        tecnico: nomeTecnico.value,
-        protocolo: protocolo.value,
-        codigo1: codigoBarra1.value,
-        codigo2: codigoBarra2.value || null
+        tecnico: nomeTecnico.value.trim(),
+        protocolo: protocolo.value.trim(),
+        codigo1: codigoBarra1.value.trim(),
+        codigo2: (codigoBarra2 && codigoBarra2.value.trim()) ? codigoBarra2.value.trim() : null
     };
+
+    mensagemStatus.style.color = "black";
+    mensagemStatus.textContent = "Enviando...";
 
     try {
         const resposta = await fetch(API_URL, {
@@ -179,10 +323,11 @@ document.getElementById("equipamentoForm").addEventListener("submit", async (e) 
             mensagemStatus.textContent = "✔ Dados enviados com sucesso!";
             limparCampos(false);
         } else {
+            const texto = await resposta.text().catch(()=>"");
             mensagemStatus.style.color = "red";
-            mensagemStatus.textContent = "❌ Erro ao enviar dados!";
+            mensagemStatus.textContent = "❌ Erro ao enviar dados! " + (texto || "");
         }
-    } catch {
+    } catch (err) {
         mensagemStatus.style.color = "red";
         mensagemStatus.textContent = "❌ Falha na conexão com a API!";
     }
@@ -193,15 +338,24 @@ function limparCampos(apagarMensagem = true) {
     nomeTecnico.value = "";
     protocolo.value = "";
     codigoBarra1.value = "";
-    codigoBarra2.value = "";
+    if (codigoBarra2) codigoBarra2.value = "";
 
-    document.getElementById("areaCodigo2").classList.add("hidden");
-    document.getElementById("pergunta2").classList.add("hidden");
+    areaCodigo2.classList.add("hidden");
+    pergunta2.classList.add("hidden");
+    ler2Btn.classList.add("hidden");
 
-    if (apagarMensagem)
-        mensagemStatus.textContent = "";
+    if (apagarMensagem) mensagemStatus.textContent = "";
 }
 
+/* ligar o botão limpar */
+limparBtn.addEventListener("click", () => limparCampos(true));
+
+/* Parar scanner quando usuário trocar de página/se sair */
+window.addEventListener("beforeunload", async () => {
+    if (currentQrScanner) {
+        try { await currentQrScanner.stop(); } catch(e){/* ignore */ }
+    }
+});
 </script>
 
 </body>
