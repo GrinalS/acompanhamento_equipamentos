@@ -201,8 +201,8 @@
     </div>
 <script>
 /* -------------------------- CONFIGURAÇÃO DA API --------------------------- */
-const API_URL = 'https://ordemservico-65p7.onrender.com/ordens';
-const API_ENDPOINT = '/ordens';
+const API_URL = 'https://app-backend-nhsj.onrender.com';
+const API_ENDPOINT = '/ordem';
 
 /* Elementos */
 const nomeTecnico = document.getElementById("nomeTecnico");
@@ -303,10 +303,11 @@ document.getElementById("equipamentoForm").addEventListener("submit", async (e) 
     e.preventDefault();
 
     const dados = {
-        tecnico: nomeTecnico.value.trim(),
+        nomeTecnico: nomeTecnico.value.trim(),
         protocolo: protocolo.value.trim(),
-        codigo1: codigoBarra1.value.trim(),
-        codigo2: (codigoBarra2 && codigoBarra2.value.trim()) ? codigoBarra2.value.trim() : null
+        codigoBarra1: codigoBarra1.value.trim(),
+        codigoBarra2: (codigoBarra2 && codigoBarra2.value.trim()) ? codigoBarra2.value.trim() : null,
+        dataEnvio: new Date()
     };
 
     mensagemStatus.style.color = "black";
@@ -361,6 +362,7 @@ window.addEventListener("beforeunload", async () => {
 
 </body>
 </html>
+
 
 
 
