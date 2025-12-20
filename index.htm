@@ -314,7 +314,7 @@ document.getElementById("equipamentoForm").addEventListener("submit", async (e) 
     mensagemStatus.textContent = "Enviando...";
 
     try {
-        const resposta = await fetch(API_URL, {
+        const resposta = await fetch(API_URL + API_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(dados)
